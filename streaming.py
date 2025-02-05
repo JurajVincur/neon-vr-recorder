@@ -166,13 +166,15 @@ class ScrcpyClient(StreamClient):
         return
 
     def _deploy_server(self) -> None:
-        jar_name = "scrcpy-server.jar"
-        server_file_path = os.path.join(
-            os.path.abspath(os.path.dirname(__file__)), jar_name
+        jar_path = "3rdparty/scrcpy/scrcpy-server.jar"
+        jar_name = os.path.basename(jar_path)
+        jar_abs_path = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), jar_path
         )
-        self.device.sync.push(server_file_path, f"/data/local/tmp/{jar_name}")
+        jar_device_path = f"/data/local/tmp/{jar_name}"
+        self.device.sync.push(jar_abs_path, jar_device_path)
         commands = [
-            f"CLASSPATH=/data/local/tmp/{jar_name}",
+            f"CLASSPATH={jar_device_path}",
             "app_process",
             "/",
             "com.genymobile.scrcpy.Server",
